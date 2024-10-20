@@ -1,0 +1,29 @@
+{
+  "name": "algodirectory-subscriber",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {
+    "dev": "ts-node-dev --project tsconfig.json --transpile-only --watch .env -r dotenv/config ./src/index.ts",
+    "start": "dotenv -e .env ts-node ./src/index.ts"
+  },
+  "engines": {
+    "node": ">=18.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "@types/node": "^22.7.7",
+    "dotenv-cli": "^7.4.2",
+    "eslint": "9.13.0",
+    "globals": "^15.11.0",
+    "prettier": "3.2.5",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.10.0"
+  },
+  "dependencies": {
+    "@algorandfoundation/algokit-subscriber": "^2.0.3",
+    "@algorandfoundation/algokit-utils": "^6.2.1",
+    "algosdk": "~2.9.0"
+  }
+}
