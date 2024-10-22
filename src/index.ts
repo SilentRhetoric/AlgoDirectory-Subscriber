@@ -4,6 +4,7 @@ import { TransactionType } from "algosdk"
 import { AlgorandSubscriber } from "@algorandfoundation/algokit-subscriber"
 import { ClientManager } from "@algorandfoundation/algokit-utils/types/client-manager"
 import { TransactionResult } from "@algorandfoundation/algokit-utils/types/indexer"
+import { Arc28EventGroup } from "@algorandfoundation/algokit-subscriber/types/arc-28"
 
 if (!fs.existsSync(path.join(__dirname, ".env")) && !process.env.ALGOD_SERVER) {
   console.error("Copy /.env.sample to /.env before starting the application.")
@@ -17,33 +18,90 @@ function convertBigIntsToNumbers(key: string, value: unknown) {
   return value
 }
 
+const directoryEvents: Arc28EventGroup = {
+  groupName: "directory",
+  processForAppIds: [722603330],
+  events: [
+    {
+      name: "CreateListingEvent",
+      args: [
+        {
+          name: "listing",
+          type: "(uint64,uint64,uint64,byte[13],string)",
+        },
+      ],
+      desc: "Defines an ARC-28 event to be emitted by the createListing method that\ncontains the listing which was created for an NFD segment of directory.algo",
+    },
+    {
+      name: "RefreshListingEvent",
+      args: [
+        {
+          name: "listing",
+          type: "(uint64,uint64,uint64,byte[13],string)",
+        },
+      ],
+      desc: "Defines an ARC-28 event to be emitted by the refreshListing method that\ncontains the listing which was refreshed",
+    },
+    {
+      name: "AbandonListingEvent",
+      args: [
+        {
+          name: "listing",
+          type: "(uint64,uint64,uint64,byte[13],string)",
+        },
+      ],
+      desc: "Defines an ARC-28 event to be emitted by the abandonListing method that\ncontains the listing which was abandoned",
+    },
+    {
+      name: "RemoveTransferredListingEvent",
+      args: [
+        {
+          name: "listing",
+          type: "(uint64,uint64,uint64,byte[13],string)",
+        },
+      ],
+      desc: "Defines an ARC-28 event to be emitted by the removeTransferredListing method that\ncontains the listing which was removed after the NFD was transferred",
+    },
+    {
+      name: "DeleteListingEvent",
+      args: [
+        {
+          name: "listing",
+          type: "(uint64,uint64,uint64,byte[13],string)",
+        },
+      ],
+      desc: "Defines an ARC-28 event to be emitted by the deleteListing method that\ncontains the listing which was deleted by an admin for inappropriate content",
+    },
+  ],
+}
+
 async function getSubscriber() {
   const algod = ClientManager.getAlgodClientFromEnvironment()
   const indexer = ClientManager.getIndexerClientFromEnvironment()
   const subscriber = new AlgorandSubscriber(
     {
+      arc28Events: [directoryEvents],
       filters: [
-        // {
-        //   name: "usdc",
-        //   filter: {
-        //     type: TransactionType.axfer,
-        //     assetId: 31566704, // MainNet: USDC
-        //     minAmount: 1_000_000, // $1
-        //   },
-        // },
         {
-          name: "directory",
+          name: "directoryARC28Events",
           filter: {
             type: TransactionType.appl,
             appId: 722603330n,
+            arc28Events: [
+              { groupName: "directory", eventName: "CreateListingEvent" },
+              { groupName: "directory", eventName: "RefreshListingEvent" },
+              { groupName: "directory", eventName: "AbandonListingEvent" },
+              { groupName: "directory", eventName: "RemoveTransferredListingEvent" },
+              { groupName: "directory", eventName: "DeleteListingEvent" },
+            ],
           },
         },
       ],
-      frequencyInSeconds: 10,
+      frequencyInSeconds: 5,
       waitForBlockWhenAtTip: true,
-      maxIndexerRoundsToSync: 1000,
-      maxRoundsToSync: 1000,
-      syncBehaviour: "skip-sync-newest",
+      maxIndexerRoundsToSync: 10000,
+      maxRoundsToSync: 10000,
+      syncBehaviour: "catchup-with-indexer",
       watermarkPersistence: {
         get: getLastWatermark,
         set: saveWatermark,
@@ -53,12 +111,7 @@ async function getSubscriber() {
     indexer,
   )
 
-  // subscriber.onBatch("usdc", async (events) => {
-  //   console.log(`Received ${events.length} asset changes`)
-  //   // Save all of the events
-  //   await persistTransactions(events)
-  // })
-  subscriber.onBatch("directory", async (txns) => {
+  subscriber.onBatch("directoryARC28Events", async (txns) => {
     console.log(`Received ${txns.length} transactions`)
     // Save all of the events
     await persistTransactions(txns)
@@ -124,15 +177,6 @@ async function persistTransactions(newTxns: TransactionResult[]) {
       await new Promise((r) => setTimeout(r, 2_000))
       subscriber.start()
     })
-
-    // If running in a loop, listen for events and do something immediately
-    // subscriber.on("usdc", (transfer) => {
-    //   console.log(
-    //     `${transfer.sender} sent ${transfer["asset-transfer-transaction"]?.receiver} USDC$${Number(
-    //       BigInt(transfer["asset-transfer-transaction"]?.amount ?? 0) / 1_000_000n,
-    //     ).toFixed(2)} in transaction ${transfer.id}`,
-    //   )
-    // })
 
     subscriber.on("directory", (txn) => {
       console.log(JSON.stringify(txn, convertBigIntsToNumbers, 2))
