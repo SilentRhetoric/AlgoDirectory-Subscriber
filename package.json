@@ -24,6 +24,7 @@
   "dependencies": {
     "@algorandfoundation/algokit-subscriber": "^2.0.3",
     "@algorandfoundation/algokit-utils": "^6.2.1",
-    "algosdk": "~2.9.0"
+    "algosdk": "~2.9.0",
+    "twitter-api-v2": "^1.18.0"
   }
 }

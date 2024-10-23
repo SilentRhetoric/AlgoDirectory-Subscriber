@@ -1,6 +1,5 @@
 import fs from "fs"
 import path from "path"
-import { TransactionType } from "algosdk"
 import { AlgorandSubscriber } from "@algorandfoundation/algokit-subscriber"
 import { ClientManager } from "@algorandfoundation/algokit-utils/types/client-manager"
 import { TransactionResult } from "@algorandfoundation/algokit-utils/types/indexer"
@@ -85,8 +84,6 @@ async function getSubscriber() {
         {
           name: "directoryARC28Events",
           filter: {
-            type: TransactionType.appl,
-            appId: 722603330n,
             arc28Events: [
               { groupName: "directory", eventName: "CreateListingEvent" },
               { groupName: "directory", eventName: "RefreshListingEvent" },
@@ -100,8 +97,8 @@ async function getSubscriber() {
       frequencyInSeconds: 5,
       waitForBlockWhenAtTip: true,
       maxIndexerRoundsToSync: 10000,
-      maxRoundsToSync: 10000,
-      syncBehaviour: "catchup-with-indexer",
+      maxRoundsToSync: 1000,
+      syncBehaviour: "skip-sync-newest",
       watermarkPersistence: {
         get: getLastWatermark,
         set: saveWatermark,
@@ -113,7 +110,6 @@ async function getSubscriber() {
 
   subscriber.onBatch("directoryARC28Events", async (txns) => {
     console.log(`Received ${txns.length} transactions`)
-    // Save all of the events
     await persistTransactions(txns)
   })
 
