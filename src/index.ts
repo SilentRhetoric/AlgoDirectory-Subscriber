@@ -13,13 +13,6 @@ if (!fs.existsSync(path.join(__dirname, ".env")) && !process.env.ALGOD_SERVER) {
 
 const APP_ID = Number(process.env.APP_ID)
 
-function convertBigIntsToNumbers(key: string, value: unknown) {
-  if (typeof value === "bigint") {
-    return Number(value)
-  }
-  return value
-}
-
 const directoryEvents: Arc28EventGroup = {
   groupName: "directory",
   processForAppIds: [APP_ID], // Silent 722603330 Tako 723090110
@@ -130,6 +123,13 @@ async function getLastWatermark(): Promise<number> {
   const existing = fs.readFileSync(path.join(__dirname, "..", "output", "watermark.txt"), "utf-8")
   console.log(`Found existing sync watermark in watermark.txt; syncing from ${existing}`)
   return Number(existing)
+}
+
+function convertBigIntsToNumbers(key: string, value: unknown) {
+  if (typeof value === "bigint") {
+    return Number(value)
+  }
+  return value
 }
 
 // Basic methods that persist transactions using the filesystem

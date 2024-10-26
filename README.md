@@ -4,12 +4,7 @@ This is a configurable Algorand transaction subscription mechanism to watch the 
 
 ## How It Works
 
-The subscriber can be run in one of two modes to read transactions from the chain and react to them. Currently, it is configured to look for application calls to the AlgoDirectory smart contract, parse the ARC-28 events that are emitted, and make a post on Twitter when a new listing is created in the directory.
-
-An environment variable controls whether the subscriber runs as a batch process or in a continuous loop.
-
-- The batch approach uses the indexer to look back for matching transactions and writes any found to a file `events.json`. This is primarily useful for development purposes.
-- The loop approach runs continuously and checks each block, as it is added to the chain, for matching transactions. This mode is intended for production so that tweets can be posted in real time as people add listings to the directory.
+The subscriber reads transactions from the chain and reacts to them. Currently, it is configured to look for application calls to the AlgoDirectory smart contract, parse the ARC-28 events that are emitted, and make a post on Twitter when a new listing is created in the directory. An environment variable controls whether the subscriber runs once or in a continuous loop.
 
 ## Development
 
@@ -50,22 +45,6 @@ RestartSec=10
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=algodirectory-subscriber
-
-Environment=NODE_ENV=production
-Environment=ALGOD_TOKEN=
-Environment=ALGOD_SERVER=https://mainnet-api.algonode.cloud/
-Environment=ALGOD_PORT=443
-Environment=INDEXER_TOKEN=
-Environment=INDEXER_SERVER=https://mainnet-idx.algonode.clou>
-Environment=INDEXER_PORT=443
-Environment=RUN_LOOP=true
-Environment=API_KEY=""
-Environment=API_SECRET_KEY=""
-Environment=BEARER_TOKEN=""
-Environment=ACCESS_TOKEN=""
-Environment=ACCESS_TOKEN_SECRET=""
-Environment=CLIENT_ID=""
-Environment=CLIENT_SECRET=""
 
 [Install]
 WantedBy=multi-user.target
