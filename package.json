@@ -4,8 +4,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node-dev --project tsconfig.json --transpile-only --watch .env -r dotenv/config ./src/index.ts -- --env-file=.env",
-    "build": "tsc",
-    "start": "node --env-file=.env ./dist/index.js"
+    "start": "cross-env RUN_LOOP=true pnpm run dev"
   },
   "engines": {
     "node": ">=20.0"
@@ -26,6 +25,7 @@
     "@algorandfoundation/algokit-subscriber": "^2.0.3",
     "@algorandfoundation/algokit-utils": "^6.2.1",
     "algosdk": "~2.9.0",
+    "cross-env": "^7.0.3",
     "twitter-api-v2": "^1.18.0"
   }
 }
