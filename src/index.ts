@@ -11,6 +11,8 @@ if (!fs.existsSync(path.join(__dirname, ".env")) && !process.env.ALGOD_SERVER) {
   process.exit(1)
 }
 
+const APP_ID = Number(process.env.APP_ID)
+
 function convertBigIntsToNumbers(key: string, value: unknown) {
   if (typeof value === "bigint") {
     return Number(value)
@@ -20,7 +22,7 @@ function convertBigIntsToNumbers(key: string, value: unknown) {
 
 const directoryEvents: Arc28EventGroup = {
   groupName: "directory",
-  processForAppIds: [722603330], // Silent 722603330 Tako 723090110
+  processForAppIds: [APP_ID], // Silent 722603330 Tako 723090110
   events: [
     {
       name: "CreateListingEvent",
@@ -77,7 +79,7 @@ const directoryEvents: Arc28EventGroup = {
 
 async function getSubscriber() {
   const algod = ClientManager.getAlgodClientFromEnvironment()
-  const indexer = ClientManager.getIndexerClientFromEnvironment()
+  // const indexer = ClientManager.getIndexerClientFromEnvironment()
   const subscriber = new AlgorandSubscriber(
     {
       arc28Events: [directoryEvents],
@@ -87,18 +89,18 @@ async function getSubscriber() {
           filter: {
             arc28Events: [
               { groupName: "directory", eventName: "CreateListingEvent" },
-              { groupName: "directory", eventName: "RefreshListingEvent" },
-              { groupName: "directory", eventName: "AbandonListingEvent" },
-              { groupName: "directory", eventName: "RemoveTransferredListingEvent" },
-              { groupName: "directory", eventName: "DeleteListingEvent" },
+              // { groupName: "directory", eventName: "RefreshListingEvent" },
+              // { groupName: "directory", eventName: "AbandonListingEvent" },
+              // { groupName: "directory", eventName: "RemoveTransferredListingEvent" },
+              // { groupName: "directory", eventName: "DeleteListingEvent" },
             ],
           },
         },
       ],
-      frequencyInSeconds: 5,
+      // frequencyInSeconds: 5,
       waitForBlockWhenAtTip: true,
-      maxIndexerRoundsToSync: 10000,
-      maxRoundsToSync: 1000,
+      // maxIndexerRoundsToSync: 10000,
+      maxRoundsToSync: 30,
       syncBehaviour: "skip-sync-newest",
       watermarkPersistence: {
         get: getLastWatermark,
@@ -106,7 +108,7 @@ async function getSubscriber() {
       },
     },
     algod,
-    indexer,
+    // indexer,
   )
 
   subscriber.onBatch("directoryARC28Events", async (txns) => {
@@ -179,10 +181,12 @@ async function persistTransactions(newTxns: TransactionResult[]) {
       // console.log(JSON.stringify(txn, convertBigIntsToNumbers, 2))
       if (txn.arc28Events![0].eventName === "CreateListingEvent") {
         const listing = txn.arc28Events![0].args[0]
+        const txID = txn.id
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [timestamp, vouchAmount, nfdAppID, tags, name] = Object.values(listing)
+        // Where the Twitter action  happens
         tweetText(
-          `Test, please ignore\n\nNew listing created: ${name}.\u200bdirectory.algo\n\nCheck it out: https://algodirectory.app/listing/${name}`,
+          `Test, please ignore\n\nNew listing created: ${name}.\u200bdirectory.algo\n\nCheck it out: https://algodirectory.app/listing/${name}\n\nTxID: ${txID}`,
         )
       }
     })

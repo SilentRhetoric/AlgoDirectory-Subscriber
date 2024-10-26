@@ -3,11 +3,12 @@
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev --project tsconfig.json --transpile-only --watch .env -r dotenv/config ./src/index.ts",
-    "start": "dotenv -e .env ts-node ./src/index.ts"
+    "dev": "ts-node-dev --project tsconfig.json --transpile-only --watch .env -r dotenv/config ./src/index.ts -- --env-file=.env",
+    "build": "tsc",
+    "start": "node --env-file=.env ./dist/index.js"
   },
   "engines": {
-    "node": ">=18.0"
+    "node": ">=20.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
