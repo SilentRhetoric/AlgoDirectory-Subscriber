@@ -4,6 +4,7 @@ import { AlgorandSubscriber } from "@algorandfoundation/algokit-subscriber"
 import { ClientManager } from "@algorandfoundation/algokit-utils/types/client-manager"
 import { TransactionResult } from "@algorandfoundation/algokit-utils/types/indexer"
 import { Arc28EventGroup } from "@algorandfoundation/algokit-subscriber/types/arc-28"
+import { tweetText } from "./tweet"
 
 if (!fs.existsSync(path.join(__dirname, ".env")) && !process.env.ALGOD_SERVER) {
   console.error("Copy /.env.sample to /.env before starting the application.")
@@ -19,7 +20,7 @@ function convertBigIntsToNumbers(key: string, value: unknown) {
 
 const directoryEvents: Arc28EventGroup = {
   groupName: "directory",
-  processForAppIds: [722603330],
+  processForAppIds: [722603330], // Silent 722603330 Tako 723090110
   events: [
     {
       name: "CreateListingEvent",
@@ -174,8 +175,16 @@ async function persistTransactions(newTxns: TransactionResult[]) {
       subscriber.start()
     })
 
-    subscriber.on("directory", (txn) => {
-      console.log(JSON.stringify(txn, convertBigIntsToNumbers, 2))
+    subscriber.on("directoryARC28Events", (txn) => {
+      // console.log(JSON.stringify(txn, convertBigIntsToNumbers, 2))
+      if (txn.arc28Events![0].eventName === "CreateListingEvent") {
+        const listing = txn.arc28Events![0].args[0]
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [timestamp, vouchAmount, nfdAppID, tags, name] = Object.values(listing)
+        tweetText(
+          `Test, please ignore\n\nNew listing created: ${name}.\u200bdirectory.algo\n\nCheck it out: https://algodirectory.app/listing/${name}`,
+        )
+      }
     })
 
     subscriber.start()

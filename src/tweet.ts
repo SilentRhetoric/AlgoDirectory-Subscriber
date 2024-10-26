@@ -13,13 +13,13 @@ const client = new TwitterApi({
 const rwClient = client.readWrite
 
 // Create textTweet function which posts a text only tweet
-export const tweetText = async () => {
+export const tweetText = async (text: string) => {
   try {
-    await rwClient.v2.tweet("Test, please ignore")
-    console.log("Success")
+    await rwClient.v2.tweet(text)
+    console.log(`Tweeted: ${text}`)
   } catch (error) {
     console.log(error)
   }
 }
 
-tweetText()
+// tweetText("Test, please ignore")
