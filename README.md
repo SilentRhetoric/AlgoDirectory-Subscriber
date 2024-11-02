@@ -19,18 +19,9 @@ To run the subscriber script:
 - Use the `.env` variable `RUN_LOOP` to control if the subscriber will continuously in a loop and print events (true) or just run once and catch up in a batch (false).
 - `pnpm run dev` to run the script in a development mode that watches files and .env for changes.
 
-## Production Test
-
-- `pnpm run build` to build the script for production.
-- `pnpm run start` to run the script in production.
-
 ## Production
 
-To set up the subscriber to run in production, perform the following setup steps:
-
-- `pnpm run build` to build the script for production.
-- Create a systemd service file that will define a service for the script to be run as a managed process. An example service file is below.
-- Set the environment variable `RUN_LOOP=true` to have the subscriber run continuously in a loop and handle transactions in real time.
+To set up the subscriber to run continuously as a managed service, create a systemd service file that will define a service for the script to be run as a managed process. An example service file is below.
 
 ### Example systemd Service
 
@@ -42,8 +33,10 @@ After=network.target
 [Service]
 Type=simple
 User=pi
-WorkingDirectory=/home/pi/algodirectory-subscriber
-ExecStart=/usr/bin/node /home/pi/algodirectory-subscriber/di>
+WorkingDirectory=/home/pi/AlgoDirectory-Subscriber
+Environment=PATH=/home/pi/.nvm/versions/node/v23.1.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=NODE_PATH=/home/pi/.nvm/versions/node/v23.1.0/bin/node
+ExecStart=/home/pi/.nvm/versions/node/v23.1.0/bin/pnpm run start
 Restart=always
 RestartSec=10
 StandardOutput=syslog
