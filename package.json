@@ -1,6 +1,6 @@
 {
   "name": "algodirectory-subscriber",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "license": "MIT",
   "scripts": {
     "dev": "ts-node-dev --project tsconfig.json --transpile-only --watch .env -r dotenv/config ./src/index.ts -- --env-file=.env",

@@ -21,5 +21,3 @@ export const tweetText = async (text: string) => {
     console.log(error)
   }
 }
-
-// tweetText("Test, please ignore")
