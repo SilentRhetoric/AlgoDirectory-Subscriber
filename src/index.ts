@@ -186,7 +186,7 @@ async function persistTransactions(newTxns: TransactionResult[]) {
         const [timestamp, vouchAmount, nfdAppID, tags, name] = Object.values(listing)
         // Where the Twitter action  happens
         tweetText(
-          `Test, please ignore\n\nNew listing created: ${name}.\u200bdirectory.algo\n\nCheck it out: https://algodirectory.app/listing/${name}\n\nTxID: ${txID}`,
+          `New listing created: ${name}.\u200bdirectory.algo\n\nCheck it out: https://algodirectory.app/listing/${name}\n\nTxID: ${txID}`,
         )
       }
     })
