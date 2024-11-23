@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "ts-node-dev --project tsconfig.json --transpile-only --watch .env -r dotenv/config ./src/index.ts -- --env-file=.env",
     "start": "cross-env RUN_LOOP=true pnpm run dev",
-    "bsky": "ts-node-dev --project tsconfig.json --transpile-only --watch .env -r dotenv/config ./src/testSkeet.ts -- --env-file=.env"
+    "test-bsky": "ts-node-dev --project tsconfig.json --transpile-only --watch .env -r dotenv/config ./tests/skeet.test.ts -- --env-file=.env",
+    "test-twitter": "ts-node-dev --project tsconfig.json --transpile-only --watch .env -r dotenv/config ./tests/tweet.test.ts -- --env-file=.env"
   },
   "engines": {
     "node": ">=20.0"
