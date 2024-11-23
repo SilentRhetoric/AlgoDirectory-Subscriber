@@ -16,7 +16,7 @@ const rwClient = client.readWrite
 export const tweetText = async (text: string) => {
   try {
     await rwClient.v2.tweet(text)
-    console.log(`Successfully tweeted:\n${text}`)
+    // console.log(`Successfully tweeted:\n${text}`)
   } catch (error) {
     console.log(error)
   }

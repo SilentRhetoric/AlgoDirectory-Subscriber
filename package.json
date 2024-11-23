@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node-dev --project tsconfig.json --transpile-only --watch .env -r dotenv/config ./src/index.ts -- --env-file=.env",
-    "start": "cross-env RUN_LOOP=true pnpm run dev"
+    "start": "cross-env RUN_LOOP=true pnpm run dev",
+    "bsky": "ts-node-dev --project tsconfig.json --transpile-only --watch .env -r dotenv/config ./src/testSkeet.ts -- --env-file=.env"
   },
   "engines": {
     "node": ">=20.0"
@@ -24,6 +25,7 @@
   "dependencies": {
     "@algorandfoundation/algokit-subscriber": "^2.0.3",
     "@algorandfoundation/algokit-utils": "^6.2.1",
+    "@atproto/api": "^0.13.18",
     "algosdk": "~2.9.0",
     "cross-env": "^7.0.3",
     "twitter-api-v2": "^1.18.0"

@@ -5,6 +5,7 @@ import { ClientManager } from "@algorandfoundation/algokit-utils/types/client-ma
 import { TransactionResult } from "@algorandfoundation/algokit-utils/types/indexer"
 import { Arc28EventGroup } from "@algorandfoundation/algokit-subscriber/types/arc-28"
 import { tweetText } from "./tweet"
+import { skeetText } from "./skeet"
 
 if (!fs.existsSync(path.join(__dirname, ".env")) && !process.env.ALGOD_SERVER) {
   console.error("Copy /.env.sample to /.env before starting the application.")
@@ -184,8 +185,14 @@ async function persistTransactions(newTxns: TransactionResult[]) {
         const txID = txn.id
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [timestamp, vouchAmount, nfdAppID, tags, name] = Object.values(listing)
-        // Where the Twitter action  happens
+
+        // Where the Twitter action happens
         tweetText(
+          `New listing created: ${name}.\u200bdirectory.algo\n\nCheck it out: https://algodirectory.app/listing/${name}\n\nTxID: ${txID}`,
+        )
+
+        // Where the Bluesky action happens
+        skeetText(
           `New listing created: ${name}.\u200bdirectory.algo\n\nCheck it out: https://algodirectory.app/listing/${name}\n\nTxID: ${txID}`,
         )
       }
