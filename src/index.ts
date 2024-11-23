@@ -188,12 +188,12 @@ async function persistTransactions(newTxns: TransactionResult[]) {
 
         // Where the Twitter action happens
         tweetText(
-          `New listing created: ${name}.\u200bdirectory.algo\n\nCheck it out: https://algodirectory.app/listing/${name}\n\nTxID: ${txID}`,
+          `New listing created: ${name}.\u200bdirectory.algo\n\nCheck it out: https://algodirectory.app/listing/${name} \n\nTxID: ${txID}`,
         )
 
         // Where the Bluesky action happens
         skeetText(
-          `New listing created: ${name}.\u200bdirectory.algo\n\nCheck it out: https://algodirectory.app/listing/${name}\n\nTxID: ${txID}`,
+          `New listing created: ${name}.\u200bdirectory.algo\n\nCheck it out: https://algodirectory.app/listing/${name} \n\nTxID: ${txID} \n#Algorand`,
         )
       }
     })
